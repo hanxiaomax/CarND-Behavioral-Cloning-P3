@@ -18,6 +18,7 @@
 [image7]: ./examples/argument_center_2016_12_01_13_31_13_686.jpg
 [image8]: ./examples/argument_right_2016_12_01_13_31_13_686.jpg
 [image9]: ./examples/argument_left_2016_12_01_13_31_13_686.jpg
+
 ---
 
 **Behavioral Cloning Project**
