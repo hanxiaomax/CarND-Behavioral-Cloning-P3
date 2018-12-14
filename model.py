@@ -124,5 +124,5 @@ model.fit_generator(train_generator,
                     epochs=5,
                     validation_data=validation_generator,
                     validation_steps=validation_steps)
-model.save('model-improve-withjitter.h5')
+model.save('model2.h5')
 
