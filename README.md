@@ -4,6 +4,25 @@
 
 ### You can use this file as a template for your writeup if you want to submit it as a markdown file, but feel free to use some other method and submit a pdf if you prefer.
 
+
+[//]: # (Image References)
+
+[image1]: ./examples/origin_center_2016_12_01_13_31_13_686.jpg 
+[image2]: ./examples/origin_right_2016_12_01_13_31_13_686.jpg 
+[image3]: ./examples/origin_left_2016_12_01_13_31_13_686.jpg 
+
+[image4]: ./examples/preprocessd_center_2016_12_01_13_31_13_686.jpg 
+[image5]: ./examples/preprocessd_right_2016_12_01_13_31_13_686.jpg 
+[image6]: ./examples/preprocessd_left_2016_12_01_13_31_13_686.jpg 
+
+[image7]: ./examples/argument_center_2016_12_01_13_31_13_686.jpg
+[image8]: ./examples/argument_right_2016_12_01_13_31_13_686.jpg
+[image9]: ./examples/argument_left_2016_12_01_13_31_13_686.jpg
+
+[image10]: ./examples/flip_center_2016_12_01_13_31_13_686.jpg
+[image11]: ./examples/flip_right_2016_12_01_13_31_13_686.jpg
+[image12]: ./examples/flip_left_2016_12_01_13_31_13_686.jpg
+
 ---
 
 **Behavioral Cloning Project**
@@ -99,65 +118,120 @@ At the end of the process, the vehicle is able to drive autonomously around the 
 
 #### 2. Final Model Architecture
 
-The final model architecture (model.py lines 18-24) consisted of a convolution neural network with the following layers and layer sizes ...
-
-Here is a visualization of the architecture (note: visualizing the architecture is optional according to the project rubric)
+The final model architecture is as follows (printed by using `print(model.summary())`)
 
 
-|Layer (type) |                Output Shape|              Param |
-|:--:|:--:|:--:|
-|conv2d_1 (Conv2D)            |(None, 32, 32, 24)  |      1824|
-|activation_1 (Activation)   | (None, 32, 32, 24)      |  0|
-|max_pooling2d_1 (MaxPooling2 |(None, 31, 31, 24)      |  0|
-|conv2d_2 (Conv2D)       |     (None, 16, 16, 36)      |  21636|
-|activation_2 (Activation)   | (None, 16, 16, 36)     |   0|
-|max_pooling2d_2 (MaxPooling2| (None, 15, 15, 36)  |      0|
-|conv2d_3 (Conv2D)      |      (None, 8, 8, 48)   |       43248|
-|activation_3 (Activation)  |  (None, 8, 8, 48)     |     0|
-|max_pooling2d_3 (MaxPooling2| (None, 7, 7, 48)     |     0|
-|conv2d_4 (Conv2D)       |     (None, 7, 7, 64)  |        27712|
-|activation_4 (Activation)  |  (None, 7, 7, 64)     |     0|
-|max_pooling2d_4 (MaxPooling2| (None, 6, 6, 64)   |       0|
-|conv2d_5 (Conv2D)          |  (None, 6, 6, 64)         | 36928|
-|activation_5 (Activation)   | (None, 6, 6, 64)        |  0|
-|max_pooling2d_5 (MaxPooling2| (None, 5, 5, 64)       |   0|
-|dropout    |    (None, 5, 5, 64)    |       0|
-|flatten_1 (Flatten)     |     (None, 1600)       |       0|
-|dense_1 (Dense)      |        (None, 1164)      |        1863564|
-|dense_2 (Dense)      |        (None, 100)       |        116500|
-|dense_3 (Dense)       |       (None, 50)        |        5050|
-|dense_4 (Dense)      |        (None, 10)       |         510|
-|dense_5 (Dense)      |        (None, 1)         |        11|
 
+```sh
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #
+=================================================================
+lambda_1 (Lambda)            (None, 66, 200, 3)        0
+_________________________________________________________________
+conv2d_1 (Conv2D)            (None, 31, 98, 24)        1824
+_________________________________________________________________
+conv2d_2 (Conv2D)            (None, 14, 47, 36)        21636
+_________________________________________________________________
+conv2d_3 (Conv2D)            (None, 5, 22, 48)         43248
+_________________________________________________________________
+conv2d_4 (Conv2D)            (None, 3, 20, 64)         27712
+_________________________________________________________________
+conv2d_5 (Conv2D)            (None, 1, 18, 64)         36928
+_________________________________________________________________
+dropout_1 (Dropout)          (None, 1, 18, 64)         0
+_________________________________________________________________
+flatten_1 (Flatten)          (None, 1152)              0
+_________________________________________________________________
+dense_1 (Dense)              (None, 100)               115300
+_________________________________________________________________
+dense_2 (Dense)              (None, 50)                5050
+_________________________________________________________________
+dense_3 (Dense)              (None, 10)                510
+_________________________________________________________________
+dense_4 (Dense)              (None, 1)                 11
+=================================================================
+Total params: 252,219
+Trainable params: 252,219
+Non-trainable params: 0
+_________________________________________________________________
+```
 
 #### 3. Creation of the Training Set & Training Process
 
 To capture good driving behavior, I first recorded two laps on track one using center lane driving. Here is an example image of center lane driving:
 
-![alt text][image2]
 
 I then recorded the vehicle recovering from the left side and right sides of the road back to center so that the vehicle would learn to .... These images show what a recovery looks like starting from ... :
 
+I use images taken from the 3 cameras fixed on center,right and left.
+
+![alt text][image1]
+![alt text][image2]
 ![alt text][image3]
+
+Then I do a pre-process for all these 3 images by crop and resize them to 60x200
+
 ![alt text][image4]
 ![alt text][image5]
-
-Then I repeated this process on track two in order to get more data points.
-
-To augment the data sat, I also flipped images and angles thinking that this would ... For example, here is an image that has then been flipped:
-
 ![alt text][image6]
+
+To save memory and get more data,I crafted a generator as below:
+
+```python
+def generate_batch_image(samples, batch_size=BATCH_SIZE):
+    while True:
+        shuffle(samples)
+        for offset in range(0, len(samples), batch_size):
+            batch_samples = samples[offset:offset + batch_size]
+            _images = []
+            _measurements = []
+            for line in batch_samples:
+                for i in range(3):
+                    path = PATH + (line[i].strip())
+                    image = imread(path)
+                    image = preprocess_image(image)
+                    
+                    if i == 1:
+                        measurement = float(line[3]) + SHEAR_CORRECTION
+                    elif i == 2:
+                        measurement = float(line[3]) - SHEAR_CORRECTION
+                    else:
+                        measurement = float(line[3])
+
+
+                    trans_image,trans_measurement = argument(image,measurement)
+
+                    _images.append(image)
+                    _measurements.append(measurement)
+                    _images.append(np.fliplr(image))
+                    _measurements.append(-measurement)
+                    _images.append(trans_image)
+                    _measurements.append(trans_measurement)
+
+
+            X_train = np.array(_images)
+            y_train = np.array(_measurements)
+
+            yield shuffle(X_train, y_train)
+```
+
+In the generator , I argumented the image data by:
+
+- flip the image
+- adding translation and random brightness
+
+![alt text][image10]
+![alt text][image11]
+![alt text][image12]
+
 ![alt text][image7]
+![alt text][image8]
+![alt text][image9]
 
-Because the reason I said above,I use some image preprocess technics to gerneralize and I coded a generator the generate infinity data.
 
-```
-
-```
-
-After the collection process, I had X number of data points. I then preprocessed this data by ...
 
 
 I finally randomly shuffled the data set and put 20% of the data into a validation set. 
 
 I used this training data for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs was Z as evidenced by ... I used an adam optimizer and set the learning rate to 10e-4.
+
