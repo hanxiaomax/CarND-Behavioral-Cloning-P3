@@ -16,16 +16,6 @@ The goals / steps of this project are the following:
 * Summarize the results with a written report
 
 
-[//]: # (Image References)
-
-[image1]: ./examples/placeholder.png "Model Visualization"
-[image2]: ./examples/placeholder.png "Grayscaling"
-[image3]: ./examples/placeholder_small.png "Recovery Image"
-[image4]: ./examples/placeholder_small.png "Recovery Image"
-[image5]: ./examples/placeholder_small.png "Recovery Image"
-[image6]: ./examples/placeholder_small.png "Normal Image"
-[image7]: ./examples/placeholder_small.png "Flipped Image"
-
 ## Rubric Points
 ### Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/432/view) individually and describe how I addressed each point in my implementation.  
 
@@ -54,9 +44,17 @@ The model.py file contains the code for training and saving the convolution neur
 
 #### 1. An appropriate model architecture has been employed
 
-The network that I used is inspired by the NVIDIA model and add dropout layer to reduce overfitting.
+The network that I used is inspired by the NVIDIA model 
 
-the lambda_1 layer accept image size of 64x64 and the image is normalized ((image data divided by 127.5 and subtracted 1.0))
+![](https://devblogs.nvidia.com/parallelforall/wp-content/uploads/2016/08/cnn-architecture-624x890.png)
+
+the lambda_1 layer accept image size of 66x200 and the image is normalized ((image data divided by 127.5 and subtracted 1.0))
+
+but I add a Drop layer to with drop prob 0.5 after the last Convolutional layer to reduce the overfit.
+
+```python
+model.add(Dropout(0.5))
+```
 
 
 
@@ -64,7 +62,10 @@ the lambda_1 layer accept image size of 64x64 and the image is normalized ((imag
 
 The model contains dropout layers in order to reduce overfitting
 
-The model was trained and validated on different data sets to ensure that the model was not overfitting (code line 10-16). The model was tested by running it through the simulator and ensuring that the vehicle could stay on the track.
+I gather the data by driving 4 circles. 2 for clockwise and 2 for anti-clockwise. 
+
+I also take some method for generalizing as follows:
+- 
 
 #### 3. Model parameter tuning
 
@@ -75,6 +76,8 @@ The model used an adam optimizer, so the learning rate was not tuned manually
 Training data was chosen to keep the vehicle driving on the road. I used a combination of center lane driving, recovering from the left and right sides of the road ... 
 
 For details about how I created the training data, see the next section. 
+
+Because the simulator is very lag , so I can not gather more data by driving the car. But I apply some random jitter to the image that the course provide to overcome the overfit.
 
 ### Model Architecture and Training Strategy
 
@@ -146,11 +149,15 @@ To augment the data sat, I also flipped images and angles thinking that this wou
 ![alt text][image6]
 ![alt text][image7]
 
-Etc ....
+Because the reason I said above,I use some image preprocess technics to gerneralize and I coded a generator the generate infinity data.
+
+```
+
+```
 
 After the collection process, I had X number of data points. I then preprocessed this data by ...
 
 
-I finally randomly shuffled the data set and put Y% of the data into a validation set. 
+I finally randomly shuffled the data set and put 20% of the data into a validation set. 
 
-I used this training data for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs was Z as evidenced by ... I used an adam optimizer so that manually training the learning rate wasn't necessary.
+I used this training data for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs was Z as evidenced by ... I used an adam optimizer and set the learning rate to 10e-4.
