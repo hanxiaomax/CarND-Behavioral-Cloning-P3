@@ -3,7 +3,7 @@ import base64
 from datetime import datetime
 import os
 import shutil
-
+import cv2
 import numpy as np
 import socketio
 import eventlet
@@ -47,6 +47,17 @@ controller = SimplePIController(0.1, 0.002)
 set_speed = 9
 controller.set_desired(set_speed)
 
+def preprocess_image(img):
+    new_img = img[50:140,:,:]
+    # apply subtle blur
+    new_img = cv2.GaussianBlur(new_img, (3,3), 0)
+    # scale to 66x200x3 (same as nVidia)
+    new_img = cv2.resize(new_img,(200, 66), interpolation = cv2.INTER_AREA)
+    # scale to ?x?x3
+    #new_img = cv2.resize(new_img,(80, 10), interpolation = cv2.INTER_AREA)
+    # convert to YUV color space (as nVidia paper suggests)
+    new_img = cv2.cvtColor(new_img, cv2.COLOR_BGR2YUV)
+    return new_img
 
 @sio.on('telemetry')
 def telemetry(sid, data):
@@ -61,11 +72,14 @@ def telemetry(sid, data):
         imgString = data["image"]
         image = Image.open(BytesIO(base64.b64decode(imgString)))
         image_array = np.asarray(image)
+        #image_array = helper.crop(image_array, 0.35, 0.1)
+        #image_array = helper.resize(image_array, new_dim=(64, 64))
+        #image_array=preprocess_image(image_array)
         steering_angle = float(model.predict(image_array[None, :, :, :], batch_size=1))
 
         throttle = controller.update(float(speed))
 
-        print(steering_angle, throttle)
+        #print(steering_angle, throttle)
         send_control(steering_angle, throttle)
 
         # save frame
