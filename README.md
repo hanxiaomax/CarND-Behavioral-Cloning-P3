@@ -48,6 +48,7 @@ My project includes the following files:
 * drive.py for driving the car in autonomous mode
 * model.h5 containing a trained convolution neural network 
 * writeup_report.md or writeup_report.pdf summarizing the results
+* visual.py is used to take some example images
 
 #### 2. Submission includes functional code
 Using the Udacity provided simulator and my drive.py file, the car can be driven autonomously around the track by executing 
@@ -71,9 +72,6 @@ the lambda_1 layer accept image size of 66x200 and the image is normalized ((ima
 
 but I add a Drop layer to with drop prob 0.5 after the last Convolutional layer to reduce the overfit.
 
-```python
-model.add(Dropout(0.5))
-```
 
 
 
@@ -81,10 +79,15 @@ model.add(Dropout(0.5))
 
 The model contains dropout layers in order to reduce overfitting
 
-I gather the data by driving 4 circles. 2 for clockwise and 2 for anti-clockwise. 
 
-I also take some method for generalizing as follows:
-- 
+```python
+model.add(Dropout(0.5))
+```
+
+
+I tried to gather the data by driving 4 circles. 2 for clockwise and 2 for anti-clockwise. 
+
+
 
 #### 3. Model parameter tuning
 
@@ -96,7 +99,7 @@ Training data was chosen to keep the vehicle driving on the road. I used a combi
 
 For details about how I created the training data, see the next section. 
 
-Because the simulator is very lag , so I can not gather more data by driving the car. But I apply some random jitter to the image that the course provide to overcome the overfit.
+**Because the simulator is very lag , so I can not gather more data by driving the car. But I apply some random jitter to the image that the course provide to overcome the overfit.**
 
 ### Model Architecture and Training Strategy
 
@@ -104,17 +107,15 @@ Because the simulator is very lag , so I can not gather more data by driving the
 
 The overall strategy for deriving a model architecture was to ...
 
-My first step was to use a convolution neural network model similar to the ... I thought this model might be appropriate because ...
+My first step was to use a convolution neural network model similar to the NVIDIA I thought this model might be appropriate because it as adopted by NVIDIA team for their end-to-end training a self-driving car.
 
-In order to gauge how well the model was working, I split my image and steering angle data into a training and validation set. I found that my first model had a low mean squared error on the training set but a high mean squared error on the validation set. This implied that the model was overfitting. 
+I tried to modify the model in there ways :
+1. without dropout layer and do not resize the image(model.h5)
+2. add droupout layer(model-improved.h5)
+3. argument the data(model-improved-withjitter.h5)
 
-To combat the overfitting, I modified the model so that ...
+the result are shown in video `run-test1.mp4`, `run-test2.mp4` and `run-test3.mp4`
 
-Then I ... 
-
-The final step was to run the simulator to see how well the car was driving around track one. There were a few spots where the vehicle fell off the track... to improve the driving behavior in these cases, I ....
-
-At the end of the process, the vehicle is able to drive autonomously around the track without leaving the road.
 
 #### 2. Final Model Architecture
 
@@ -217,8 +218,8 @@ def generate_batch_image(samples, batch_size=BATCH_SIZE):
 
 In the generator , I argumented the image data by:
 
-- flip the image
-- adding translation and random brightness
+1.**flip the image**
+2.**adding translation and random brightness**
 
 ![alt text][image10]
 ![alt text][image11]
@@ -233,5 +234,5 @@ In the generator , I argumented the image data by:
 
 I finally randomly shuffled the data set and put 20% of the data into a validation set. 
 
-I used this training data for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs was Z as evidenced by ... I used an adam optimizer and set the learning rate to 10e-4.
+I used this training data for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs was 5 I used an adam optimizer and set the learning rate to 10e-4.
 
