@@ -4,6 +4,20 @@
 
 ### You can use this file as a template for your writeup if you want to submit it as a markdown file, but feel free to use some other method and submit a pdf if you prefer.
 
+
+[//]: # (Image References)
+
+[image1]: ./examples/origin_center_2016_12_01_13_31_13_686.jpg 
+[image2]: ./examples/origin_right_2016_12_01_13_31_13_686.jpg 
+[image3]: ./examples/origin_left_2016_12_01_13_31_13_686.jpg 
+
+[image4]: ./examples/preprocessd_center_2016_12_01_13_31_13_686.jpg 
+[image5]: ./examples/preprocessd_right_2016_12_01_13_31_13_686.jpg 
+[image6]: ./examples/preprocessd_left_2016_12_01_13_31_13_686.jpg 
+
+[image7]: ./examples/argument_center_2016_12_01_13_31_13_686.jpg
+[image8]: ./examples/argument_right_2016_12_01_13_31_13_686.jpg
+[image9]: ./examples/argument_left_2016_12_01_13_31_13_686.jpg
 ---
 
 **Behavioral Cloning Project**
@@ -134,20 +148,21 @@ Here is a visualization of the architecture (note: visualizing the architecture 
 
 To capture good driving behavior, I first recorded two laps on track one using center lane driving. Here is an example image of center lane driving:
 
-![alt text][image2]
 
 I then recorded the vehicle recovering from the left side and right sides of the road back to center so that the vehicle would learn to .... These images show what a recovery looks like starting from ... :
 
+I use images taken from the 3 cameras fixed on center,right and left.
+
+![alt text][image1]
+![alt text][image2]
 ![alt text][image3]
+
+Then I do a pre-process for all these 3 images by crop and resize them to 60x200
+
 ![alt text][image4]
 ![alt text][image5]
-
-Then I repeated this process on track two in order to get more data points.
-
-To augment the data sat, I also flipped images and angles thinking that this would ... For example, here is an image that has then been flipped:
-
 ![alt text][image6]
-![alt text][image7]
+
 
 Because the reason I said above,I use some image preprocess technics to gerneralize and I coded a generator the generate more data.
 
@@ -194,11 +209,14 @@ In the generator , I argumented the image data by:
 - adding translation
 - adding random brightness
 
-![](./example/origin_center_2016_12_01_13_31_13_686.jpg)
-![](./example/origin_right_2016_12_01_13_31_13_686.jpg)
-![](./example/origin_right_2016_12_01_13_31_13_686.jpg)
+![alt text][image7]
+![alt text][image8]
+![alt text][image9]
+
+
 
 
 I finally randomly shuffled the data set and put 20% of the data into a validation set. 
 
 I used this training data for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs was Z as evidenced by ... I used an adam optimizer and set the learning rate to 10e-4.
+
