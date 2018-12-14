@@ -1,4 +1,4 @@
-    # **Behavioral Cloning** 
+# **Behavioral Cloning** 
 
 ## Writeup Template
 
@@ -54,19 +54,21 @@ The model.py file contains the code for training and saving the convolution neur
 
 #### 1. An appropriate model architecture has been employed
 
-My model consists of a convolution neural network with 3x3 filter sizes and depths between 32 and 128 (model.py lines 18-24) 
+The network that I used is inspired by the NVIDIA model and add dropout layer to reduce overfitting.
 
-The model includes RELU layers to introduce nonlinearity (code line 20), and the data is normalized in the model using a Keras lambda layer (code line 18). 
+the lambda_1 layer accept image size of 64x64 and the image is normalized ((image data divided by 127.5 and subtracted 1.0))
+
+
 
 #### 2. Attempts to reduce overfitting in the model
 
-The model contains dropout layers in order to reduce overfitting (model.py lines 21). 
+The model contains dropout layers in order to reduce overfitting
 
 The model was trained and validated on different data sets to ensure that the model was not overfitting (code line 10-16). The model was tested by running it through the simulator and ensuring that the vehicle could stay on the track.
 
 #### 3. Model parameter tuning
 
-The model used an adam optimizer, so the learning rate was not tuned manually (model.py line 25).
+The model used an adam optimizer, so the learning rate was not tuned manually 
 
 #### 4. Appropriate training data
 
@@ -98,7 +100,32 @@ The final model architecture (model.py lines 18-24) consisted of a convolution n
 
 Here is a visualization of the architecture (note: visualizing the architecture is optional according to the project rubric)
 
-![alt text][image1]
+
+|Layer (type) |                Output Shape|              Param |
+|:--:|:--:|:--:|
+|conv2d_1 (Conv2D)            |(None, 32, 32, 24)  |      1824|
+|activation_1 (Activation)   | (None, 32, 32, 24)      |  0|
+|max_pooling2d_1 (MaxPooling2 |(None, 31, 31, 24)      |  0|
+|conv2d_2 (Conv2D)       |     (None, 16, 16, 36)      |  21636|
+|activation_2 (Activation)   | (None, 16, 16, 36)     |   0|
+|max_pooling2d_2 (MaxPooling2| (None, 15, 15, 36)  |      0|
+|conv2d_3 (Conv2D)      |      (None, 8, 8, 48)   |       43248|
+|activation_3 (Activation)  |  (None, 8, 8, 48)     |     0|
+|max_pooling2d_3 (MaxPooling2| (None, 7, 7, 48)     |     0|
+|conv2d_4 (Conv2D)       |     (None, 7, 7, 64)  |        27712|
+|activation_4 (Activation)  |  (None, 7, 7, 64)     |     0|
+|max_pooling2d_4 (MaxPooling2| (None, 6, 6, 64)   |       0|
+|conv2d_5 (Conv2D)          |  (None, 6, 6, 64)         | 36928|
+|activation_5 (Activation)   | (None, 6, 6, 64)        |  0|
+|max_pooling2d_5 (MaxPooling2| (None, 5, 5, 64)       |   0|
+|dropout    |    (None, 5, 5, 64)    |       0|
+|flatten_1 (Flatten)     |     (None, 1600)       |       0|
+|dense_1 (Dense)      |        (None, 1164)      |        1863564|
+|dense_2 (Dense)      |        (None, 100)       |        116500|
+|dense_3 (Dense)       |       (None, 50)        |        5050|
+|dense_4 (Dense)      |        (None, 10)       |         510|
+|dense_5 (Dense)      |        (None, 1)         |        11|
+
 
 #### 3. Creation of the Training Set & Training Process
 
