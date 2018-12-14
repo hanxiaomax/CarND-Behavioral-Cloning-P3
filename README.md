@@ -19,6 +19,10 @@
 [image8]: ./examples/argument_right_2016_12_01_13_31_13_686.jpg
 [image9]: ./examples/argument_left_2016_12_01_13_31_13_686.jpg
 
+[image10]: ./examples/flip_center_2016_12_01_13_31_13_686.jpg
+[image11]: ./examples/flip_right_2016_12_01_13_31_13_686.jpg
+[image12]: ./examples/flip_left_2016_12_01_13_31_13_686.jpg
+
 ---
 
 **Behavioral Cloning Project**
@@ -215,6 +219,10 @@ In the generator , I argumented the image data by:
 
 - flip the image
 - adding translation and random brightness
+
+![alt text][image10]
+![alt text][image11]
+![alt text][image12]
 
 ![alt text][image7]
 ![alt text][image8]
