@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-ls
-
 import cv2
 import csv
 import numpy as np
@@ -20,9 +18,11 @@ PATH = "/opt/carnd_p3/data/"
 lines = []
 with open(PATH+"driving_log.csv") as input:
     reader = csv.reader(input)
-    for line in reader:
+    for index, line in enumerate(reader):
+        if index == 0:
+        	continue
         lines.append(line)
-    lines.pop(0)
+    
 
 #set trains and validations
 train_samples, validation_samples = train_test_split(lines, test_size=0.2)
@@ -71,12 +71,14 @@ def generate_batch_image(samples, batch_size=BATCH_SIZE):
                     path = PATH + (line[i].strip())
                     image = imread(path)
                     image = preprocess_image(image)
-                    if i == 0:
-                        measurement = float(line[3])
-                    elif i == 1:
+                    
+                    if i == 1:
                         measurement = float(line[3]) + SHEAR_CORRECTION
                     elif i == 2:
                         measurement = float(line[3]) - SHEAR_CORRECTION
+                    else:
+                        measurement = float(line[3])
+
 
                     trans_image,trans_measurement = argument(image,measurement)
 
@@ -123,3 +125,4 @@ model.fit_generator(train_generator,
                     validation_data=validation_generator,
                     validation_steps=validation_steps)
 model.save('model-improve-withjitter.h5')
+
