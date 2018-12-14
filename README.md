@@ -149,13 +149,54 @@ To augment the data sat, I also flipped images and angles thinking that this wou
 ![alt text][image6]
 ![alt text][image7]
 
-Because the reason I said above,I use some image preprocess technics to gerneralize and I coded a generator the generate infinity data.
+Because the reason I said above,I use some image preprocess technics to gerneralize and I coded a generator the generate more data.
 
+```python
+def generate_batch_image(samples, batch_size=BATCH_SIZE):
+    while True:
+        shuffle(samples)
+        for offset in range(0, len(samples), batch_size):
+            batch_samples = samples[offset:offset + batch_size]
+            _images = []
+            _measurements = []
+            for line in batch_samples:
+                for i in range(3):
+                    path = PATH + (line[i].strip())
+                    image = imread(path)
+                    image = preprocess_image(image)
+                    
+                    if i == 1:
+                        measurement = float(line[3]) + SHEAR_CORRECTION
+                    elif i == 2:
+                        measurement = float(line[3]) - SHEAR_CORRECTION
+                    else:
+                        measurement = float(line[3])
+
+
+                    trans_image,trans_measurement = argument(image,measurement)
+
+                    _images.append(image)
+                    _measurements.append(measurement)
+                    _images.append(np.fliplr(image))
+                    _measurements.append(-measurement)
+                    _images.append(trans_image)
+                    _measurements.append(trans_measurement)
+
+
+            X_train = np.array(_images)
+            y_train = np.array(_measurements)
+
+            yield shuffle(X_train, y_train)
 ```
 
-```
+In the generator , I argumented the image data by:
 
-After the collection process, I had X number of data points. I then preprocessed this data by ...
+- adding translation
+- adding random brightness
+
+![](./example/origin_center_2016_12_01_13_31_13_686.jpg)
+![](./example/origin_right_2016_12_01_13_31_13_686.jpg)
+![](./example/origin_right_2016_12_01_13_31_13_686.jpg)
 
 
 I finally randomly shuffled the data set and put 20% of the data into a validation set. 
