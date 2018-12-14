@@ -51,4 +51,6 @@ with open(PATH+"driving_log.csv") as input:
         cv2.imwrite("./examples/preprocessd_"+filename,image)
         image,_ = argument(_image,0)
         cv2.imwrite("./examples/argument_"+filename,image)
+        image = np.fliplr(_image)
+        cv2.imwrite("./examples/flip_"+filename,image)
     

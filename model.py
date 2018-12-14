@@ -119,10 +119,12 @@ model.add(Dense(50))
 model.add(Dense(10))
 model.add(Dense(1))
 model.compile(optimizer=Adam(10e-4), loss='mse')
+print(model.summary())
 model.fit_generator(train_generator,
                     steps_per_epoch=train_steps,
                     epochs=5,
                     validation_data=validation_generator,
-                    validation_steps=validation_steps)
+                    validation_steps=validation_steps,verbose=1)
+
 model.save('model2.h5')
 
